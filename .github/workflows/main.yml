@@ -1,0 +1,29 @@
+name: Post Adkar Every 30 Minutes
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # هادي كتعني "كل 30 دقيقة"
+  workflow_dispatch:        # باش تقدر تخدمو يدوياً إلا بغيتي تـتـيستي
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install pyTelegramBotAPI google-generativeai
+
+      - name: Run bot
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+        run: python bot.py
