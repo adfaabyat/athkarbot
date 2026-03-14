@@ -6,8 +6,8 @@ import google.generativeai as genai
 print("--- Start Script ---")
 
 try:
-    # إعداد Gemini
-    print("Configuring Gemini...")
+    # إعداد Gemini 2.5 Flash (الأحدث لعام 2026)
+    print("Configuring Gemini 2.5 Flash...")
     genai.configure(api_key=os.environ['GEMINI_API_KEY'])
     model = genai.GenerativeModel('gemini-2.5-flash')
 
@@ -17,25 +17,24 @@ try:
     bot = telebot.TeleBot(BOT_TOKEN)
     print("Telegram Bot configured.")
 
-    # 1. طلب الأذكار مع تنسيق المسافات الجديد
-    print("Requesting Adkar from Gemini...")
+    # 1. طلب الذكر القصير جداً مع المسافات
+    print("Requesting Short Adkar from Gemini 2.5 Flash...")
     prompt = """
-    أعطني رسالة منظمة للأذكار بنفس التنسيق التالي تماماً مع ضرورة ترك سطر فارغ بين كل قسم:
+    أعطني ذكراً أو حديثاً نبوياً قصيراً جداً، بنفس التنسيق التالي تماماً مع ترك سطر فارغ بين كل سطر:
 
-    📿 (اسم القسم مثلاً: استغفار أو تسبيح)
-    
-    اسم الذكر الأول
-    اسم الذكر الثاني
-    اسم الذكر الثالث
-    اسم الذكر الرابع
-    
-    💎 ذكر بسيط… وأجر عظيم
+    💎 ذكر عظيم
+
+    قال رسول الله ﷺ:
+
+    "نص الحديث أو الذكر هنا"
+
+    (جملة الفضل أو الأجر هنا باختصار)
 
     ملاحظات هامة:
-    1. اترك سطراً فارغاً بعد العنوان (الذي بجانبه مسبحة).
-    2. اترك سطراً فارغاً قبل الجملة الختامية (ذكر بسيط...).
-    3. لا تستخدم الرمز ✨ نهائياً.
-    4. لا تضف أي مقدمات مثل "إليك الأذكار" أو "تم التوليد".
+    1. اترك سطراً فارغاً بين كل قسم كما في المثال.
+    2. لا تستخدم الرمز ✨ نهائياً.
+    3. النص يجب أن يكون قصيراً جداً ومؤثراً.
+    4. لا تضف أي مقدمات أو خاتمة.
     """
     
     response = model.generate_content(prompt)
@@ -45,7 +44,7 @@ try:
     # 2. إرسال الرسالة
     print(f"Attempting to post to Channel ID: {CHANNEL_ID}...")
     bot.send_message(CHANNEL_ID, adkar_text)
-    print("✅ SUCCESS: Adkar posted to Telegram!")
+    print("✅ SUCCESS: Post complete using Gemini 2.5 Flash!")
 
 except Exception as e:
     print(f"❌ ERROR: Something went wrong: {e}")
