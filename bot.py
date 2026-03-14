@@ -9,7 +9,7 @@ try:
     # إعداد Gemini
     print("Configuring Gemini...")
     genai.configure(api_key=os.environ['GEMINI_API_KEY'])
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.5-flash')
 
     # إعداد التليجرام
     BOT_TOKEN = os.environ['BOT_TOKEN']
