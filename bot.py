@@ -2,48 +2,43 @@ import os
 import telebot
 import google.generativeai as genai
 
-# Configuration dyal Gemini
-genai.configure(api_key=os.environ['GEMINI_API_KEY'])
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Logs: Nbdawo l-khdma
+print("--- Start Script ---")
 
-# Configuration dyal Telegram
-BOT_TOKEN = os.environ['BOT_TOKEN']
-CHANNEL_ID = os.environ['CHANNEL_ID']
-bot = telebot.TeleBot(BOT_TOKEN)
+try:
+    # Configuration
+    print("Configuring Gemini...")
+    genai.configure(api_key=os.environ['GEMINI_API_KEY'])
+    model = genai.GenerativeModel('gemini-1.5-flash')
 
-def get_adkar():
-    # الـ Prompt الجديد بدون رمز النجمة
+    BOT_TOKEN = os.environ['BOT_TOKEN']
+    CHANNEL_ID = os.environ['CHANNEL_ID']
+    bot = telebot.TeleBot(BOT_TOKEN)
+    print("Telegram Bot configured.")
+
+    # 1. Jib l-adkar men Gemini
+    print("Requesting Adkar from Gemini...")
     prompt = """
-    أعطني رسالة منظمة للأذكار بنفس التنسيق التالي تماماً:
-
+    أعطني رسالة منظمة للأذكار بنفس التنسيق تماماً:
     📿 تسبيح
-    
-    اسم التسبيح (مثال: سبحان الله) ×33
-    اسم التسبيح (مثال: الحمد لله) ×33
-    اسم التسبيح (مثال: الله أكبر) ×34
-
+    اسم التسبيح ×33
+    اسم التسبيح ×33
+    اسم التسبيح ×34
     💎 دقيقة واحدة من وقتك قد تكون سببًا في رفعة درجتك عند الله.
-
     🤲 دعاء
-    
-    (اكتب هنا دعاء قصير وجميل من سطرين أو ثلاثة)
-    (مثال: اللهم اجعلنا من الذاكرين الشاكرين...)
-
-    ملاحظة: 
-    1. استخدم الرموز التعبيرية الإسلامية المناسبة مثل (📿، 🤲، 💎، 🌙).
-    2. لا تستخدم رمز النجمة (✨).
-    3. لا تضف أي مقدمات أو خاتمة، فقط النص المطلوب.
+    (دعاء قصير)
+    ملاحظة: لا تستخدم رمز ✨ ولا تضف مقدمات.
     """
     response = model.generate_content(prompt)
-    return response.text
+    adkar_text = response.text
+    print(f"Adkar generated successfully:\n{adkar_text}")
 
-def main():
-    try:
-        adkar_text = get_adkar()
-        bot.send_message(CHANNEL_ID, adkar_text)
-        print("Adkar posted with new safe emojis!")
-    except Exception as e:
-        print(f"Error: {e}")
+    # 2. Sift l-adkar l-Telegram
+    print(f"Attempting to post to Channel ID: {CHANNEL_ID}...")
+    bot.send_message(CHANNEL_ID, adkar_text)
+    print("✅ SUCCESS: Adkar posted to Telegram!")
 
-if __name__ == "__main__":
-    main()
+except Exception as e:
+    print(f"❌ ERROR: Something went wrong: {e}")
+
+print("--- End Script ---")
