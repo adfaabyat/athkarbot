@@ -1,12 +1,13 @@
 import os
 import telebot
 import google.generativeai as genai
+import random
 
 # Logs: بداية التشغيل
 print("--- Start Script ---")
 
 try:
-    # إعداد Gemini 2.5 Flash (الأحدث لعام 2026)
+    # إعداد Gemini 2.5 Flash
     print("Configuring Gemini 2.5 Flash...")
     genai.configure(api_key=os.environ['GEMINI_API_KEY'])
     model = genai.GenerativeModel('gemini-2.5-flash')
@@ -17,36 +18,34 @@ try:
     bot = telebot.TeleBot(BOT_TOKEN)
     print("Telegram Bot configured.")
 
-    # 1. طلب الذكر القصير جداً مع المسافات
-    print("Requesting Short Adkar from Gemini 2.5 Flash...")
-    prompt = """
-    أعطني ذكراً أو حديثاً نبوياً قصيراً جداً، بنفس التنسيق التالي تماماً مع ترك سطر فارغ بين كل سطر:
+    # اختيار عشوائي للمصدر لضمان التنوع
+    sources = ["آية قرآنية", "حديث نبوي شريف", "ذكر مأثور عن النبي ﷺ"]
+    selected_source = random.choice(sources)
 
-    💎 ذكر عظيم
-
-    قال رسول الله ﷺ:
-
-    "نص الحديث أو الذكر هنا"
-
-    (جملة الفضل أو الأجر هنا باختصار)
-
-    ملاحظات هامة:
-    1. اترك سطراً فارغاً بين كل قسم كما في المثال.
-    2. لا تستخدم الرمز ✨ نهائياً.
-    3. النص يجب أن يكون قصيراً جداً ومؤثراً.
-    4. لا تضف أي مقدمات أو خاتمة.
+    # 1. طلب المحتوى من Gemini مع التركيز على الصحة والجمالية
+    print(f"Requesting valid {selected_source}...")
+    prompt = f"""
+    اريد {selected_source} لنشره في قناة تلجرام مخصصة للأذكار.
+    
+    الشروط:
+    1. تأكد تماماً من صحة الآية (بالتشكيل) أو صحة الحديث النبوي (من الكتب الصحاح).
+    2. التنسيق: اترك مسافات كافية بين الأسطر ليكون الكلام مريحاً للقراءة.
+    3. الرموز: استخدم إيموجيات إسلامية وجميلة (مثل 🌙، 🤲، 📿، 📖، 💎) لتزيين المنشور.
+    4. المحتوى: يجب أن يتضمن المصدر (مثل اسم السورة ورقم الآية، أو الراوي/الكتاب للحديث).
+    5. لا تضف أي مقدمات خارج نص المنشور، ولا تستخدم الرمز ✨.
+    6. اجعل المنشور قصيراً ومؤثراً.
     """
     
     response = model.generate_content(prompt)
-    adkar_text = response.text
-    print(f"Adkar generated successfully:\n{adkar_text}")
+    adkar_text = response.text.strip()
+    
+    print(f"Generated Content:\n{adkar_text}")
 
     # 2. إرسال الرسالة
-    print(f"Attempting to post to Channel ID: {CHANNEL_ID}...")
     bot.send_message(CHANNEL_ID, adkar_text)
-    print("✅ SUCCESS: Post complete using Gemini 2.5 Flash!")
+    print(f"✅ SUCCESS: {selected_source} posted successfully!")
 
 except Exception as e:
-    print(f"❌ ERROR: Something went wrong: {e}")
+    print(f"❌ ERROR: {e}")
 
 print("--- End Script ---")
